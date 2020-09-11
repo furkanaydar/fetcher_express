@@ -108,5 +108,9 @@ app.post("/urls", async (req, res) => {
 
 });
 
+app.get('/urls', (req, res) => {
+    res.json({ response: 'OK!'});
+})
+
 //export app
 module.exports = app;
