@@ -64,7 +64,7 @@ async function doRequests(adminkey, currentPage, videoId) {
         formData: {
             'Email':'enesbuyukbayram@yandex.com',
             'Password' : '123456',
-            '__RequestVerificationToken': '7kQ8B2kFq-2EcVALQyoMkS71ns9tbx5uyXXyujAtEmUmLVFwQJxklGy9uyZWpKgFfngOzVDu5wo7rI2P1qDYZB1cUA7XZN05qVgfttKSz1s1'
+            '__RequestVerificationToken': adminkey
         }
     };
 
