@@ -82,6 +82,10 @@ async function doRequests(adminkey, currentPage, videoId) {
         let sourceUri = value.attribs.src;
         sourceUris.push(sourceUri);
       });
+
+    if (sourceUris.length === 0) {
+      return 'ERROR';
+    }  
     var options_video_json = {
         url: sourceUris[videoId],
         method: 'GET'
@@ -96,6 +100,7 @@ async function doRequests(adminkey, currentPage, videoId) {
             return video_uri;
         }
     }
+    return 'TRY_AGAIN';
   }
 
 app.post("/urls", async (req, res) => {
