@@ -1,0 +1,24 @@
+{
+  "name": "fetchproject",
+  "version": "1.0.0",
+  "description": "fetcher",
+  "main": "app__.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cheerio": "^1.0.0-rc.3",
+    "cookie-parser": "^1.4.5",
+    "crawler": "^1.2.2",
+    "express": "^4.17.1",
+    "fast-xml-parser": "^3.17.4",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
+    "superagent": "^6.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "furkan_aydar",
+  "license": "ISC"
+}
