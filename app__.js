@@ -53,6 +53,9 @@ function getAllIndexes(arr, val) {
     return jsonBody.substring(start, end);
   };
 
+  function notNull(elem) {
+    elem !== 'undefined' && elem.length !== null;
+  }
 
 async function doRequests(currentPage, videoId) {
     var request = require('request')
@@ -106,11 +109,11 @@ async function doRequests(currentPage, videoId) {
     response = await rp(options_video_json);
     let all_1080 = getAllIndexes(response, 'quality":"1080p"');
     let all_720 = getAllIndexes(response, 'quality":720p');
+    let all_540 = getAllIndexes(response, 'quality":540p');
+    all_1080 = notNull(all_1080) ? all_1080 : ((notNull(all_720) ? all_720 : all_540));
+    if (not)
     for (var i=0; i<all_1080.length; i++)
     {
-        if (all_1080 === 'undefined' || all_1080.length === 0) {
-          all_1080 = all_720;
-        }
         let jstr = getJsonString(response, all_1080[i]);
         let video_uri = getVideoUri(jstr);
         if (video_uri.indexOf('https') >= 0) {
