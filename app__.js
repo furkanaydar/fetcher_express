@@ -53,8 +53,8 @@ function getAllIndexes(arr, val) {
     return jsonBody.substring(start, end);
   };
 
-  function notNull(elem) {
-    elem !== 'undefined' && elem.length !== null;
+  function isIncluded(elem) {
+    return elem !== 'undefined' && elem.length !== null;
   }
 
 async function doRequests(currentPage, videoId) {
@@ -91,7 +91,6 @@ async function doRequests(currentPage, videoId) {
     let sourceUris = [];
 
     response = await rp(options_login);
-
     response = await rp(options_page);
     const $ = cheerio.load(response);
     $('iframe').each( function( key, value ) {
@@ -101,17 +100,19 @@ async function doRequests(currentPage, videoId) {
     if (sourceUris.length === 0) {
       return 'ERROR';
     }  
-
     var options_video_json = {
         uri: sourceUris[videoId],
         method: 'GET'
     };
     response = await rp(options_video_json);
+    console.log(response);
     let all_1080 = getAllIndexes(response, 'quality":"1080p"');
-    let all_720 = getAllIndexes(response, 'quality":720p');
-    let all_540 = getAllIndexes(response, 'quality":540p');
-    all_1080 = notNull(all_1080) ? all_1080 : ((notNull(all_720) ? all_720 : all_540));
-    if (not)
+    let all_720 = getAllIndexes(response, 'quality":"720p"');
+    let all_540 = getAllIndexes(response, 'quality":"540p"');
+    console.log(all_1080, all_720, all_540);
+    console.log(isIncluded(all_1080), isIncluded(all_720), isIncluded(all_540));
+
+    all_1080 = isIncluded(all_1080) ? all_1080 : ((isIncluded(all_720) ? all_720 : all_540));
     for (var i=0; i<all_1080.length; i++)
     {
         let jstr = getJsonString(response, all_1080[i]);
