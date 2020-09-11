@@ -4,12 +4,10 @@ const bodyParser = require('body-parser');
 //import express
 const express = require('express');
 const cheerio = require('cheerio')
-var cookieParser = require('cookie-parser')
 
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser())
 
 function getAllIndexes(arr, val) {
     var indexes = [], i = -1;
@@ -56,15 +54,29 @@ function getAllIndexes(arr, val) {
   };
 
 
-async function doRequests(adminkey, currentPage, videoId) {
+async function doRequests(currentPage, videoId) {
+    var request = require('request')
+
     const rp = require('request-promise').defaults({ jar: true , simple: false});
+
+    let response
+
+    var options_login_get = {
+      method: 'POST',
+      uri: 'https://stagedoctorstus.com/User/UserLogin'
+    }
+    response = await rp(options_login_get);
+    const loginPage = cheerio.load(response);
+    let inputs = loginPage('input')
+    const requestKey = inputs[0].attribs.value;
+
     var options_login = {
         method: 'POST',
         uri: 'https://stagedoctorstus.com/User/UserLogin',
         formData: {
             'Email':'enesbuyukbayram@yandex.com',
             'Password' : '123456',
-            '__RequestVerificationToken': adminkey
+            '__RequestVerificationToken': requestKey
         }
     };
 
@@ -74,43 +86,47 @@ async function doRequests(adminkey, currentPage, videoId) {
     }
 
     let sourceUris = [];
-    let response
+
     response = await rp(options_login);
+
     response = await rp(options_page);
     const $ = cheerio.load(response);
     $('iframe').each( function( key, value ) {
         let sourceUri = value.attribs.src;
         sourceUris.push(sourceUri);
       });
-
     if (sourceUris.length === 0) {
       return 'ERROR';
     }  
+
     var options_video_json = {
-        url: sourceUris[videoId],
+        uri: sourceUris[videoId],
         method: 'GET'
     };
     response = await rp(options_video_json);
     let all_1080 = getAllIndexes(response, 'quality":"1080p"');
+    let all_720 = getAllIndexes(response, 'quality":720p');
     for (var i=0; i<all_1080.length; i++)
     {
+        if (all_1080 === 'undefined' || all_1080.length === 0) {
+          all_1080 = all_720;
+        }
         let jstr = getJsonString(response, all_1080[i]);
         let video_uri = getVideoUri(jstr);
         if (video_uri.indexOf('https') >= 0) {
             return video_uri;
         }
     }
-    return 'TRY_AGAIN';
   }
 
+function woof() {
+
+}  
 app.post("/urls", async (req, res) => {
     let pageUri = req.body.page;
     let videoId = req.body.vid;
-    let adminkey = req.body.adminkey || '7kQ8B2kFq-2EcVALQyoMkS71ns9tbx5uyXXyujAtEmUmLVFwQJxklGy9uyZWpKgFfngOzVDu5wo7rI2P1qDYZB1cUA7XZN05qVgfttKSz1s1';
     
-    res.json({ response: await doRequests(adminkey, pageUri, videoId)});
-
-
+    res.json({ response: await doRequests(pageUri, videoId)});
 });
 
 app.get('/urls', (req, res) => {
