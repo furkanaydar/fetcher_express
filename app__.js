@@ -3,11 +3,14 @@ const bodyParser = require('body-parser');
 
 //import express
 const express = require('express');
+const cors = require('cors');
+
 const cheerio = require('cheerio')
 
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors());
 
 function getAllIndexes(arr, val) {
     var indexes = [], i = -1;
